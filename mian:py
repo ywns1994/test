@@ -1,0 +1,44 @@
+from kivy.app import App
+from kivy.uix.button import Button
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.clock import Clock
+
+class ReconnectApp(App):
+    def build(self):
+        layout = BoxLayout(orientation='vertical')
+        self.label = Label(text="Select reconnect duration:")
+        layout.add_widget(self.label)
+
+        # إنشاء الأزرار
+        self.buttons = {}
+        for duration in [3, 20, 30, 40, 50]:
+            btn = Button(text=f"{duration}s")
+            btn.bind(on_press=self.start_reconnect)
+            layout.add_widget(btn)
+            self.buttons[duration] = btn
+
+        # زر التشغيل
+        self.btn_start = Button(text="يونس فيصل الفتاحي")
+        self.btn_start.bind(on_press=self.start_reconnect)
+        layout.add_widget(self.btn_start)
+
+        # زر الإيقاف
+        self.btn_stop = Button(text="Stop")
+        self.btn_stop.bind(on_press=self.stop_reconnect)
+        layout.add_widget(self.btn_stop)
+
+        return layout
+
+    def start_reconnect(self, instance):
+        duration = int(instance.text[:-1])  # الحصول على الرقم من النص
+        Clock.schedule_once(lambda dt: self.reconnect(duration), duration)
+
+    def reconnect(self, duration):
+        print(f"Reconnected after {duration} seconds")
+
+    def stop_reconnect(self, instance):
+        print("Reconnection stopped.")
+
+if __name__ == "__main__":
+    ReconnectApp().run()
