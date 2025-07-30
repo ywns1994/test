@@ -1,0 +1,36 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - main  # أو أي فرع تريد بناء التطبيق عند الدفع إليه
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'  # اختر الإصدار الذي تريده
+
+    - name: Install dependencies
+      run: |
+        pip install kivy
+        pip install buildozer
+
+    - name: Build APK
+      run: |
+        buildozer -v android debug
+        mkdir -p output
+        cp bin/*.apk output/
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3  # استخدام الإصدار الأحدث
+      with:
+        name: apk
+        path: output/*.apk
